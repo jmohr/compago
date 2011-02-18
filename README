@@ -1,0 +1,187 @@
+=============================================================================
+Project: Compago
+Copyright: ©2011 Justin Mohr. All Rights Reserved.
+=============================================================================
+
+Write polished command line applications in a fraction of the time.
+Guaranteed, or double your money back!
+
+Compago is a framework for simple command-line parsing in Python. Compago
+provides a simple framework and set of decorators to allow you to quickly
+and easily define a set of commands within a script.
+
+For those familiar with Ruby's Thor, Compago fills a similar niche.
+
+Inspired by and based on the excellent Flask-Script extension for Flask.
+(see: http://packages.python.org/Flask-Script/)
+
+-----------------------------------------------------------------------------
+Background
+-----------------------------------------------------------------------------
+
+Why Compago?
+
+We've all needed to whip up a quick command line script at some point. How
+often have you wanted to wrap a quick five lines of Python in a script for
+reuse? Perhaps your little script requires a few arguments to be passed in.
+In the past, you've had a few options:
+
+  - Quick and dirty: just hard code some global variables at the top of
+    your script.
+  - Better, but still messy: just directly pull in sys.argv
+  - Best, but difficult: use optparse or argparse
+
+If you'll be using the script often, option 1 can become a pain very quickly.
+And if you ever need to let someone else use the script, option 1 can be a
+no-go.
+
+Option 2 is pretty easy, but just directly using sys.argv can get out
+of control very quickly if you need to pull in more than one command line
+argument.
+
+Using argparse or optparse is the most prudent option, but if your script
+is just a few lines of code, setting up all of that boilerplate can add
+a ton of overhead to your quick script.
+
+With Compago, you have another option. With the use of some simple
+decorators, Compago can introspect a function, and set up command line
+arguments and defaults automagically.
+
+For example, instead of importing optparse, and manually setting up each
+option in an OptionParser, and then taking the output of that and feeding
+it into your function, you can just define your function thusly:
+
+  @app.command
+  def check_host(hostname, username='admin', password='testing123'):
+      '''Do some stuff.'''
+      pass
+
+Now, the function's arguments (hostname, username, password) will be
+available as command line arguments to your script:
+
+  ./app check_host localhost --username=root --password=testing234
+
+That's it! No other nasty boilerplate required.
+
+-----------------------------------------------------------------------------
+Installing Compago
+-----------------------------------------------------------------------------
+
+Use pip or easy_install:
+
+  pip install compago
+  easy_install compago
+
+Boom. Done.
+
+Or alternately, fetch the source from github:
+
+  git clone https://github.com/jmohr/erigo.git
+
+-----------------------------------------------------------------------------
+Using Compago
+-----------------------------------------------------------------------------
+
+A basic script will be structured in the following way:
+
+  import compago
+
+  myapp = compago.Application()
+
+  @myapp.command
+  def mycommand(arg):
+    print "running mycommand with arg: %s" % arg
+
+  if __name__ == '__main__': myapp.run()
+
+Then, if that script is saved as "myapp.py", you can execute your new script
+from the command line like this:
+
+  python myapp.py -h
+  python myapp.py mycommand -h
+  python myapp.py mycommand "Hello, world!"
+
+That's all there is to writing a basic Compago script.
+
+-----------------------------------------------------------------------------
+Commands and Options
+-----------------------------------------------------------------------------
+
+The @app.command decorator shown above is pretty straight forward in its
+usage. Simply decorate a function (with or without arguments), and the
+function will then be available as a "command" on the command line.
+
+Function arguments without a default defined will be "positional" or
+"required" arguments on the command line. For example, in the mycommand
+example above, the "arg" argument is required on the command line.
+
+If you provide a default for your function argument, it will be an option
+on the command line. For example:
+
+  @myapp.command
+  def mycommand(say="Hello", name="John Doe"):
+    print "%s, %s." % (say, name)
+
+In that example, the arguments "say" and "name" will be available as options
+on the command line:
+
+  python myapp.py --say="What up" --name="Justin Beiber"
+  or
+  python myapp.py -s "Goodbye" -n "Dude"
+
+If the options are not specified, the defaults will be used. One special
+type of option exists, and that is a boolean option:
+
+  @myapp.command
+  def mycommand(debug=False):
+    if debug:
+      print "Lots of great debugging info..."
+    else:
+      print "Terse. Very terse."
+
+In this example, the "debug" option is a switch on the command line:
+
+  python myapp.py --debug
+
+If provided, debug will be set to True. No need to provide a value.
+
+You can mix up the argument types, as well:
+
+  @myapp.command
+  def deploy(hostname, username="admin", verbose=True):
+    result = ssh_to(hostname, username=username)
+    if verbose: print result
+
+It works as you'd expect.
+
+Another decorator is available if you need more control over the options.
+You can define one or more @option decorators on your function, and pass
+in the same arguments that you would pass directly to argparse.ArgumentParser
+to define an option. See it in action:
+
+  @myapp.option('-x', '--execute', dest='command')
+  @myapp.option('-U', '--user', dest='username')
+  def run(command, username):
+    with exec_user(username):
+      call(command)
+
+This also works about as you'd expect. One thing to note, if you decorate
+your function with one or more @option decorators, there is no need to also
+decorate it with @command. This will be done automatically.
+
+-----------------------------------------------------------------------------
+Helper functions
+-----------------------------------------------------------------------------
+
+Compago also defines a few helper functions for you to use in your scripts.
+These helpers are in the compago.script module:
+
+ask(question, default) - Prompt the user and return their answer.
+password(question) - Prompt the user for a password.
+yesno(question, default) - Prompt the user with a y/n question.
+
+-----------------------------------------------------------------------------
+TODO
+-----------------------------------------------------------------------------
+
+Lots of things...
