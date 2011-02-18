@@ -46,21 +46,16 @@ class Application(object):
     commands = {}
     options = []
 
-    def __init__(self, name=None, usage=None):
+    def __init__(self, name=None):
         '''
         @param name:    Then name of this application. Default: sys.argv[0]
         @type name:     str
-        @param usage:   A usage string for this application.
-        @type usage:    str
         '''
         if name:
             self.name = name
         else:
             self.name = sys.argv[0]
-        if usage:
-            self.usage = usage
-        else:
-            self.usage = '%s [options] arguments' % self.name
+        self.config = {}
         logger.debug('Initializing new application with name: %s' % name)
 
     @property
@@ -122,6 +117,17 @@ class Application(object):
         self.commands[command.name] = command
 
         return func
+
+    def add_option(self, *args, **kwargs):
+        option = Option(*args, **kwargs)
+        self.options.append(option)
+        app_namespace, remaining_args = self.parser.parse_known_args()
+        for k, v in app_namespace.__dict__.items():
+            if k not in self.config:
+                logger.debug("Setting application config: %s = %s" % (k, v))
+                self.config[k] = v
+                if not hasattr(self, k):
+                    setattr(self, k, v)
 
     def option(self, *args, **kwargs):
         '''
@@ -210,13 +216,14 @@ class Application(object):
         return command.run(*positional_args, **command_namespace.__dict__)
 
     def get_usage(self):
-        pad = max([len(k) for k in self.commands]) + 2
+        if self.commands:
+            pad = max([len(k) for k in self.commands]) + 2
+        else:
+            pad = 0
         format = '  %%- %ds%%s' % pad
         result = []
 
-        if self.usage:
-            result.append('USAGE:\n')
-            result.append('  %s\n' % self.usage)
+        result.append(self.parser.format_help())
 
         if self.commands:
             result.append('COMMANDS:\n')
