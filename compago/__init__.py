@@ -1,4 +1,3 @@
-from application import Application
-from command import Command
 from option import Option
-from script import *
+from command import Command, CommandError
+from application import Application, ApplicationError

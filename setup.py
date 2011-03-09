@@ -6,7 +6,7 @@ setup(
     author = 'Justin Mohr',
     author_email = 'jmohr@bytepulse.net',
     packages = find_packages(exclude=['*.test.*', '*.test']),
-    version = '1.0',
+    version = '1.1',
     install_requires = ['argparse'],
     license = 'BSD',
     url = 'http://github.com/jmohr/compago',
