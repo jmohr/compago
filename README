@@ -59,16 +59,18 @@ In the past, you've had a few options:
   - Best, but difficult: use optparse or argparse
 
 If you'll be using the script often, option 1 can become a pain very quickly.
-And if you ever need to let someone else use the script, option 1 can be a
-no-go.
+You have to open the file in a text editor every time you need to change the
+values. And if you ever need to let someone else use the script, option 1 can
+be a no-go.
 
 Option 2 is pretty easy, but just directly using sys.argv can get out
 of control very quickly if you need to pull in more than one command line
-argument.
+argument. And similar to using global variables, expecting other users to
+always play nice with the command line args is just asking for trouble.
 
-Using argparse or optparse is the most prudent option, but if your script
-is just a few lines of code, setting up all of that boilerplate can add
-a ton of overhead to your quick script.
+Using argparse and/or optparse is the most prudent option, but if your script
+is just a few lines of code, setting up all of that boilerplate can add a ton
+of overhead to your quick script.
 
 With Compago, you have another option. With the use of some simple
 decorators, Compago can introspect a function, and set up command line
@@ -78,15 +80,21 @@ For example, instead of importing optparse, and manually setting up each
 option in an OptionParser, and then taking the output of that and feeding
 it into your function, you can just define your function thusly:
 
+myapp.py:
+
   @app.command
   def check_host(hostname, username='admin', password='testing123'):
       '''Do some stuff.'''
-      pass
+      print "Let's do some junk on %s as user %s." % (
+          hostname, username)
 
 Now, the function's arguments (hostname, username, password) will be
 available as command line arguments to your script:
 
-  ./app check_host localhost --username=root --password=testing234
+  $ ./myapp.py check_host localhost --username=root --password=testing234
+  Let's do some junk on localhost as user root.
+  $ ./myapp.py check_host host1.example.com
+  Let's do some junk on host1.example.com as user admin.
 
 That's it! No other nasty boilerplate required.
 
@@ -103,44 +111,39 @@ Boom. Done.
 
 Or alternately, fetch the source from github:
 
-  git clone https://github.com/jmohr/erigo.git
+  git clone https://github.com/jmohr/compago.git
 
 -----------------------------------------------------------------------------
 Using Compago
 -----------------------------------------------------------------------------
 
-A basic script will be structured in the following way:
+Starting a Compago script is as easy as importing the compago module, and
+creating a compago.Application object.
 
   import compago
 
-  myapp = compago.Application()
+  app = compago.Application()
 
-  @myapp.command
-  def mycommand(arg):
-    print "running mycommand with arg: %s" % arg
-
-  if __name__ == '__main__': myapp.run()
-
-Then, if that script is saved as "myapp.py", you can execute your new script
-from the command line like this:
-
-  python myapp.py -h
-  python myapp.py mycommand -h
-  python myapp.py mycommand "Hello, world!"
-
-That's all there is to writing a basic Compago script.
+An Application has one primary attribute, a name. By default, this will just
+be the name of the script (sys.argv[0]), but you can override this if needed.
+The name will be shown in the help.
 
 -----------------------------------------------------------------------------
 Commands and Options
 -----------------------------------------------------------------------------
 
-The @app.command decorator shown above is pretty straight forward in its
-usage. Simply decorate a function (with or without arguments), and the
-function will then be available as a "command" on the command line.
+After you create the application, you need to define some commands. A command
+will be accessible for the user to call on the command line. For example, in
+the Quick Start example above, the "check_host" function is a command. You
+can define as many commands as you want in your script.
+
+The @app.command decorator is pretty straight forward in its usage. Simply
+decorate a function (with or without arguments), and the function will then
+be available as a "command" on the command line.
 
 Function arguments without a default defined will be "positional" or
-"required" arguments on the command line. For example, in the mycommand
-example above, the "arg" argument is required on the command line.
+"required" arguments on the command line. For example, in the check_host
+example above, the "hostname" argument is required on the command line.
 
 If you provide a default for your function argument, it will be an option
 on the command line. For example:
@@ -196,19 +199,38 @@ This also works about as you'd expect. One thing to note, if you decorate
 your function with one or more @option decorators, there is no need to also
 decorate it with @command. This will be done automatically.
 
+Finally, adding help strings to your commands is super easy. Just put a
+docstring in the function, and that string will be shown when the user
+runs --help or -h on the command line. For example:
+
+  @myapp.command
+  def help_included():
+    '''This command has some help.'''
+    pass
+
+When the user runs "python myapp.py --help", it will show the docstring next
+to help_included. Try it!
+
 -----------------------------------------------------------------------------
-Helper functions
+FAQ
 -----------------------------------------------------------------------------
 
-Compago also defines a few helper functions for you to use in your scripts.
-These helpers are in the compago.script module:
+Q: Why did you write Compago?
 
-ask(question, default) - Prompt the user and return their answer.
-password(question) - Prompt the user for a password.
-yesno(question, default) - Prompt the user with a y/n question.
+A: I really liked the way Thor and Flask-Script worked, and I wanted a
+similar tool for my plain old Python scripts. And I had way to much time
+on my hands.
+
+Q: What does Compago mean?
+
+A: According to Google Translate -- which is *never* wrong -- compago is
+Latin for "joint" or "connection".
 
 -----------------------------------------------------------------------------
 TODO
 -----------------------------------------------------------------------------
 
-Lots of things...
+  * Add a plugin framework.
+  * Add easy logging access through the Application object.
+  * Create more helper functions for fun stuff.
+
