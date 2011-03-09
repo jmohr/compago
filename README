@@ -8,12 +8,39 @@ Guaranteed, or double your money back!
 
 Compago is a framework for simple command-line parsing in Python. Compago
 provides a simple framework and set of decorators to allow you to quickly
-and easily define a set of commands within a script.
+and easily define a set of commands within a script. For those familiar with
+Ruby's Thor, Compago fills a similar niche.
 
-For those familiar with Ruby's Thor, Compago fills a similar niche.
+This project was inspired by the excellent Flask-Script extension for Flask,
+but has been entirely rewritten to remove all Flask dependencies.
 
-Inspired by and based on the excellent Flask-Script extension for Flask.
 (see: http://packages.python.org/Flask-Script/)
+
+-----------------------------------------------------------------------------
+Quick Start
+-----------------------------------------------------------------------------
+
+First, install compago with pip, or alternately fetch the sources from Github or PyPI.
+
+  $ pip install compago
+
+Then, create a python file named "mycommand.py" containing this:
+
+  import compago
+
+  app = compago.Application()
+
+  @app.command
+  def say_hello(to="world"):
+    print("Hello there, %s" % to)
+
+  if __name__ == '__main__': app.run()
+
+Save the file, and run it thusly:
+
+  $ python mycommand.py
+
+For some more in-depth examples, see the /examples folder in the sources.
 
 -----------------------------------------------------------------------------
 Background
