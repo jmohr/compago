@@ -1,6 +1,6 @@
 =============================================================================
 Project: Compago
-Copyright: ©2011 Justin Mohr. All Rights Reserved.
+Copyright: ©2011,2012 Justin Mohr. All Rights Reserved.
 =============================================================================
 
 Write polished command line applications in a fraction of the time.
@@ -212,6 +212,115 @@ When the user runs "python myapp.py --help", it will show the docstring next
 to help_included. Try it!
 
 -----------------------------------------------------------------------------
+Plugins
+-----------------------------------------------------------------------------
+
+Compago provides a simple plugin framework, which allows you to write your
+own plugins to be used in your scripts. Two default plugins are provided,
+and are turned on by default if you have the compago_plugins module
+installed.
+
+The default plugins are LoggingPlugin and ConfigPlugin. LoggingPlugin
+provides access to Python's logging infrastructure from within your commands.
+For example:
+
+  @myapp.command
+  def test_command(name):
+    myapp.logger.info('Hello, {0}!'.format(name))
+
+This command will log an INFO message to myapp.py.log (or whatever your
+script is called). By default, logging will not occur unless you call your
+script with the --log option:
+
+  $ python myapp.py --log test_command Justin
+
+You can also specify --logfile, which will override the default location
+of the log file.
+
+  $ python myapp.py --log --logfile /var/log/myapp.log test_command Justin
+
+The second default plugin is the ConfigPlugin. This allows you to read
+config vars from a YAML formatted config file (default location:
+./myapp.py.conf). This location can be overridden by specifying the
+--configfile option on the command line.
+
+Any config variables defined in the config file are available within your
+commands as myapp.config['YOUR_KEY']. For example, say you have a config file
+named /etc/myapp.conf:
+
+  YOUR_NAME: Justin
+  YOUR_EMAIL: justin@example.org
+  YOUR_BACON_LEVELS:
+    -low
+    -medium
+    -high
+
+And you call your script thusly:
+
+  $ python myapp.py --configfile /etc/myapp.conf
+
+Then, within your commands, you can fetch these config variables:
+
+  @myapp.command
+  def test_command():
+    print myapp.config['YOUR_NAME']
+    # ... etc ...
+
+You can disable plugins by overriding Application.default_plugins before
+instantiating your Application:
+
+  from compago import Application
+  Application.default_plugins = []
+
+  myapp = Application()
+
+  # ... etc ...
+
+### Writing your own plugins
+
+You can write your own plugins easily. A plugin is a class that inherits
+from compago.plugin.Plugin. It should override one or more of the hook
+methods:
+
+  after_application_init(application) - called just after the application is
+                                        initialized
+  before_command_run(application, command) - called before a command is run
+  after_command_run(application, command) - called just after a command is run
+  option_added(application, option) - called after an option is defined
+  command_added(application, command) - called after a command is defined
+
+For example, let's say we want a simple plugin that prints out the current
+time before and after each command is run. Create a file time_plugin.py:
+
+  from compago.plugin import Plugin
+  from datetime import datetime
+
+  class TimePlugin(Plugin):
+
+    def before_command_run(self, application):
+      print datetime.now()
+
+    def after_command_run(self, application):
+      print datetime.now()
+
+Then, to use the plugin in your compago application:
+
+  from compago import Application
+  from time_plugin import TimePlugin
+
+  myapp = Application()
+  myapp.add_plugin(TimePlugin())
+
+  @myapp.command
+  def testing123():
+    pass
+
+  if __name__ == '__main__':
+    myapp.run()
+
+Simple as that!
+
+-----------------------------------------------------------------------------
 FAQ
 -----------------------------------------------------------------------------
 
@@ -230,7 +339,5 @@ Latin for "joint" or "connection".
 TODO
 -----------------------------------------------------------------------------
 
-  * Add a plugin framework.
-  * Add easy logging access through the Application object.
   * Create more helper functions for fun stuff.
 
