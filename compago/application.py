@@ -4,6 +4,16 @@ import sys
 import traceback
 
 from compago import Option, Command, CommandError
+from compago.plugin import PluginManager
+
+try:
+    import compago_plugins
+except ImportError, e:
+    compago_plugins = None
+    DEFAULT_PLUGINS = []
+else:
+    DEFAULT_PLUGINS = [compago_plugins.LoggingPlugin(),
+                       compago_plugins.ConfigPlugin()]
 
 
 logger = logging.getLogger(__name__)
@@ -14,11 +24,17 @@ class ApplicationError(Exception): pass
 
 class Application(object):
 
+    default_plugins = DEFAULT_PLUGINS
+
     def __init__(self, name=None):
         self.name = name or sys.argv[0]
         self.options = []
         self.commands = {}
-        self.plugins = []
+        self.args = {}
+        self.plugin_manager = PluginManager(self)
+        for plugin in self.default_plugins:
+            self.add_plugin(plugin)
+        self.plugin_manager.run_hook('after_application_init')
 
     @property
     def parser(self):
@@ -30,8 +46,7 @@ class Application(object):
     @property
     def usage(self):
         logger.debug('Generating usage string.')
-        usage = []
-        usage.append(self.parser.format_help())
+        usage = [self.parser.format_help()]
         if self.commands:
             pad = max([len(c) for c in self.commands]) + 2
             fmt = '  %%-%ds%%s' % pad
@@ -47,7 +62,9 @@ class Application(object):
         self.options.append(option)
         app_ns, remainder = self.parser.parse_known_args(sys.argv)
         for k,v in app_ns.__dict__.items():
-            setattr(self, k, v)
+            #setattr(self, k, v)
+            self.args[k] = v
+        self.plugin_manager.run_hook('option_added', option)
         return option
 
     def option(self, *args, **kwargs):
@@ -66,20 +83,18 @@ class Application(object):
             kwargs['parent'] = self
         cmd = Command(*args, **kwargs)
         self.commands[cmd.name] = cmd
+        self.plugin_manager.run_hook('command_added', cmd)
         return cmd
 
     def command(self, target):
         self.add_command(target)
 
     def add_plugin(self, plugin):
-        self.plugins.append(plugin)
+        self.plugin_manager.register(plugin)
 
     def run(self, args=None, default=None):
         logger.debug('Running application with args:%s, default:%s' % (
                 args, default))
-
-        for plugin in self.plugins:
-            plugin.before_run()
 
         if not args:
             logger.debug('args is None, so using sys.argv')
@@ -114,8 +129,9 @@ class Application(object):
         try:
             logger.debug('Executing command:%s with args:%s' % (
                         cmd, str(args)))
+            self.plugin_manager.run_hook('before_command_run', self.commands[cmd])
             result = self.commands[cmd].run(*args)
-            [p.after_run() for p in self.plugins]
+            self.plugin_manager.run_hook('after_command_run', self.commands[cmd])
             return result
         except CommandError, e:
             logger.error('Command failed: %s' % e)

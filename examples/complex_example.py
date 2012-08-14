@@ -3,7 +3,7 @@ import compago
 app = compago.Application()
 app.add_option('--debug', dest='debug', action='store_true', default=False)
 
-if app.debug:
+if app.args['debug']:
     import logging
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s: %(message)s')
 
