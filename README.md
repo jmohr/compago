@@ -1,7 +1,8 @@
-=============================================================================
 Project: Compago
-Copyright: ©2011,2012 Justin Mohr. All Rights Reserved.
 =============================================================================
+
+Copyright: ©2016 Justin Mohr. See LICENSE for details.
+-----------------------------------------------------------------------------
 
 Write polished command line applications in a fraction of the time.
 Guaranteed, or double your money back!
@@ -16,7 +17,6 @@ but has been entirely rewritten to remove all Flask dependencies.
 
 (see: http://packages.python.org/Flask-Script/)
 
------------------------------------------------------------------------------
 Quick Start
 -----------------------------------------------------------------------------
 
@@ -42,7 +42,6 @@ Save the file, and run it thusly:
 
 For some more in-depth examples, see the /examples folder in the sources.
 
------------------------------------------------------------------------------
 Background
 -----------------------------------------------------------------------------
 
@@ -98,7 +97,6 @@ available as command line arguments to your script:
 
 That's it! No other nasty boilerplate required.
 
------------------------------------------------------------------------------
 Installing Compago
 -----------------------------------------------------------------------------
 
@@ -113,7 +111,6 @@ Or alternately, fetch the source from github:
 
   git clone https://github.com/jmohr/compago.git
 
------------------------------------------------------------------------------
 Using Compago
 -----------------------------------------------------------------------------
 
@@ -128,7 +125,6 @@ An Application has one primary attribute, a name. By default, this will just
 be the name of the script (sys.argv[0]), but you can override this if needed.
 The name will be shown in the help.
 
------------------------------------------------------------------------------
 Commands and Options
 -----------------------------------------------------------------------------
 
@@ -211,7 +207,6 @@ runs --help or -h on the command line. For example:
 When the user runs "python myapp.py --help", it will show the docstring next
 to help_included. Try it!
 
------------------------------------------------------------------------------
 Plugins
 -----------------------------------------------------------------------------
 
@@ -320,7 +315,6 @@ Then, to use the plugin in your compago application:
 
 Simple as that!
 
------------------------------------------------------------------------------
 FAQ
 -----------------------------------------------------------------------------
 
@@ -335,7 +329,6 @@ Q: What does Compago mean?
 A: According to Google Translate -- which is *never* wrong -- compago is
 Latin for "joint" or "connection".
 
------------------------------------------------------------------------------
 TODO
 -----------------------------------------------------------------------------
 
