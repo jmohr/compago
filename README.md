@@ -26,16 +26,18 @@ First, install compago with pip, or alternately fetch the sources from Github or
 
 Then, create a python file named `mycommand.py` containing this:
 
-    import compago
+```python
+import compago
 
-    app = compago.Application()
+app = compago.Application()
 
-    @app.command
-    def say_hello(to="world"):
-        print("Hello there, %s" % to)
+@app.command
+def say_hello(to="world"):
+    print("Hello there, %s" % to)
 
-    if __name__ == '__main__':
-        app.run()
+if __name__ == '__main__':
+    app.run()
+```
 
 Save the file, and run it thusly:
 
