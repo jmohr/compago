@@ -5,12 +5,15 @@ app.add_option('--debug', dest='debug', action='store_true', default=False)
 
 if app.args['debug']:
     import logging
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s: %(message)s')
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(name)s: %(message)s')
+
 
 @app.command
 def simple():
     '''This is a simple command that takes no args.'''
     print 'Doing something simple!'
+
 
 @app.command
 def positional_args(one, two):
@@ -19,6 +22,7 @@ def positional_args(one, two):
     # the user will call this command as:
     # complex_example.py positional_args <arg1> <arg2>
     print 'Positional args: one=%s, two=%s' % (one, two)
+
 
 @app.command
 def keyword_options(three='three', four=False):
@@ -29,6 +33,7 @@ def keyword_options(three='three', four=False):
     # Note: keywords with boolean defaults will be toggle options
     print 'Options: three=%s, four=%s' % (three, four)
 
+
 @app.command
 def mix_and_match(name, greeting='Hello', yell=False):
     '''Mixing and matching positional args and keyword options.'''
@@ -37,6 +42,7 @@ def mix_and_match(name, greeting='Hello', yell=False):
         print '%s!' % say.upper()
     else:
         print '%s.' % say
+
 
 @app.option('-G', '--greeting', dest='greeting', default='Hello')
 @app.option('--yell', dest='yell', action='store_true', default=False)
@@ -50,4 +56,6 @@ def option_decorator(name, greeting, yell):
     else:
         print '%s.' % say
 
-if __name__ == '__main__': app.run()
+
+if __name__ == '__main__':
+    app.run()
