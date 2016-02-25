@@ -4,7 +4,6 @@ from compago.plugin import Plugin
 
 
 class LoggingPlugin(Plugin):
-
     """
     This plugin provides logging within your application's commands. To
     use it, simply add the LoggingPlugin to your application thusly:
@@ -42,12 +41,14 @@ class LoggingPlugin(Plugin):
         self.format = format
 
     def after_application_init(self, application):
-        application.add_option('--log', dest='do_log', action='store_true', default=False,
-                               help='If --log is not specified, logging will not occur.')
+        default_log = 'Default: {name}.log'.format(name=application.name)
+        application.add_option('--log', dest='do_log', action='store_true',
+                               default=False,
+                               help='If not specified, no logging will occur.')
         application.add_option('--logfile', dest='logfile',
                                metavar='PATH',
-                               help='Optional path to the logfile. Default: {0}.log'.format(
-                                   application.name))
+                               help='Optional path to the logfile. {0}'.format(
+                                   default))
         application.logger = logging.getLogger(application.name)
         application.logger.setLevel(self.level)
         if not self.path:
@@ -62,5 +63,3 @@ class LoggingPlugin(Plugin):
             application.logger.removeHandler(handler)
         application.logger.addHandler(hdlr)
         application.logger.info('Logging plugin loaded.')
-
-
