@@ -1,6 +1,9 @@
-![Compago](https://raw.githubusercontent.com/jmohr/compago/feature/python3/logo.png)
+![alt text][logo]
 
-    Copyright: ©2016 Justin Mohr. See LICENSE for details.
+The easy way to parse command line arguments in Python.
+-----------------------------------------------------------------------------
+
+    Copyright: ©2016 Justin Mohr. See [LICENSE][license] for details.
 
 Write polished command line applications in a fraction of the time.
 Guaranteed, or double your money back!
@@ -13,7 +16,7 @@ Ruby's Thor, Compago fills a similar niche.
 This project was inspired by the excellent Flask-Script extension for Flask,
 but has been entirely rewritten to remove all Flask dependencies.
 
-(see: http://packages.python.org/Flask-Script/)
+See also: http://packages.python.org/Flask-Script/
 
 Quick Start
 -----------------------------------------------------------------------------
@@ -80,19 +83,20 @@ it into your function, you can just define your function thusly:
 
 myapp.py:
 
-  @app.command
-  def check_host(hostname, username='admin', password='testing123'):
-      '''Do some stuff.'''
-      print "Let's do some junk on %s as user %s." % (
-          hostname, username)
+    @app.command
+    def check_host(hostname, username='admin', password='testing123'):
+        '''Do some stuff.'''
+        print "Let's do some junk on %s as user %s." % (
+            hostname, username)
 
 Now, the function's arguments (hostname, username, password) will be
 available as command line arguments to your script:
 
-  $ ./myapp.py check_host localhost --username=root --password=testing234
-  Let's do some junk on localhost as user root.
-  $ ./myapp.py check_host host1.example.com
-  Let's do some junk on host1.example.com as user admin.
+    $ ./myapp.py check_host localhost --username=root --password=testing234
+    Let's do some junk on localhost as user root.
+  
+    $ ./myapp.py check_host host1.example.com
+    Let's do some junk on host1.example.com as user admin.
 
 That's it! No other nasty boilerplate required.
 
@@ -101,14 +105,14 @@ Installing Compago
 
 Use pip or easy_install:
 
-  pip install compago
-  easy_install compago
+    pip install compago
+    easy_install compago
 
 Boom. Done.
 
 Or alternately, fetch the source from github:
 
-  git clone https://github.com/jmohr/compago.git
+    git clone https://github.com/jmohr/compago.git
 
 Using Compago
 -----------------------------------------------------------------------------
@@ -116,9 +120,8 @@ Using Compago
 Starting a Compago script is as easy as importing the compago module, and
 creating a compago.Application object.
 
-  import compago
-
-  app = compago.Application()
+    import compago
+    app = compago.Application()
 
 An Application has one primary attribute, a name. By default, this will just
 be the name of the script (sys.argv[0]), but you can override this if needed.
@@ -143,39 +146,40 @@ example above, the "hostname" argument is required on the command line.
 If you provide a default for your function argument, it will be an option
 on the command line. For example:
 
-  @myapp.command
-  def mycommand(say="Hello", name="John Doe"):
-    print "%s, %s." % (say, name)
+    @myapp.command
+    def mycommand(say="Hello", name="John Doe"):
+      print "%s, %s." % (say, name)
 
 In that example, the arguments "say" and "name" will be available as options
 on the command line:
 
-  python myapp.py --say="What up" --name="Justin Beiber"
-  or
-  python myapp.py -s "Goodbye" -n "Dude"
+    python myapp.py --say="What up" --name="Justin Beiber"
+    ...or...
+    python myapp.py -s "Goodbye" -n "Dude"
 
 If the options are not specified, the defaults will be used. One special
 type of option exists, and that is a boolean option:
 
-  @myapp.command
-  def mycommand(debug=False):
-    if debug:
-      print "Lots of great debugging info..."
-    else:
-      print "Terse. Very terse."
+    @myapp.command
+    def mycommand(debug=False):
+        if debug:
+            print "Lots of great debugging info..."
+        else:
+            print "Terse. Very terse."
 
 In this example, the "debug" option is a switch on the command line:
 
-  python myapp.py --debug
+    python myapp.py --debug
 
 If provided, debug will be set to True. No need to provide a value.
 
 You can mix up the argument types, as well:
 
-  @myapp.command
-  def deploy(hostname, username="admin", verbose=True):
-    result = ssh_to(hostname, username=username)
-    if verbose: print result
+    @myapp.command
+    def deploy(hostname, username="admin", verbose=True):
+        result = ssh_to(hostname, username=username)
+        if verbose:
+            print result
 
 It works as you'd expect.
 
@@ -184,11 +188,11 @@ You can define one or more @option decorators on your function, and pass
 in the same arguments that you would pass directly to argparse.ArgumentParser
 to define an option. See it in action:
 
-  @myapp.option('-x', '--execute', dest='command')
-  @myapp.option('-U', '--user', dest='username')
-  def run(command, username):
-    with exec_user(username):
-      call(command)
+    @myapp.option('-x', '--execute', dest='command')
+    @myapp.option('-U', '--user', dest='username')
+    def run(command, username):
+        with exec_user(username):
+            call(command)
 
 This also works about as you'd expect. One thing to note, if you decorate
 your function with one or more @option decorators, there is no need to also
@@ -198,10 +202,10 @@ Finally, adding help strings to your commands is super easy. Just put a
 docstring in the function, and that string will be shown when the user
 runs --help or -h on the command line. For example:
 
-  @myapp.command
-  def help_included():
-    '''This command has some help.'''
-    pass
+    @myapp.command
+    def help_included():
+        """This command has some help."""
+        pass
 
 When the user runs "python myapp.py --help", it will show the docstring next
 to help_included. Try it!
@@ -218,20 +222,20 @@ The default plugins are LoggingPlugin and ConfigPlugin. LoggingPlugin
 provides access to Python's logging infrastructure from within your commands.
 For example:
 
-  @myapp.command
-  def test_command(name):
-    myapp.logger.info('Hello, {0}!'.format(name))
+    @myapp.command
+    def test_command(name):
+        myapp.logger.info('Hello, {0}!'.format(name))
 
 This command will log an INFO message to myapp.py.log (or whatever your
 script is called). By default, logging will not occur unless you call your
 script with the --log option:
 
-  $ python myapp.py --log test_command Justin
+    $ python myapp.py --log test_command Justin
 
 You can also specify --logfile, which will override the default location
 of the log file.
 
-  $ python myapp.py --log --logfile /var/log/myapp.log test_command Justin
+    $ python myapp.py --log --logfile /var/log/myapp.log test_command Justin
 
 The second default plugin is the ConfigPlugin. This allows you to read
 config vars from a YAML formatted config file (default location:
@@ -242,33 +246,33 @@ Any config variables defined in the config file are available within your
 commands as myapp.config['YOUR_KEY']. For example, say you have a config file
 named /etc/myapp.conf:
 
-  YOUR_NAME: Justin
-  YOUR_EMAIL: justin@example.org
-  YOUR_BACON_LEVELS:
-    -low
-    -medium
-    -high
+    YOUR_NAME: Justin
+    YOUR_EMAIL: justin@example.org
+    YOUR_HAM_LEVELS:
+        -low
+        -medium
+        -high
 
 And you call your script thusly:
 
-  $ python myapp.py --configfile /etc/myapp.conf
+    $ python myapp.py --configfile /etc/myapp.conf
 
 Then, within your commands, you can fetch these config variables:
 
-  @myapp.command
-  def test_command():
-    print myapp.config['YOUR_NAME']
-    # ... etc ...
+    @myapp.command
+    def test_command():
+        print myapp.config['YOUR_NAME']
+        # ... etc ...
 
 You can disable plugins by overriding Application.default_plugins before
 instantiating your Application:
 
-  from compago import Application
-  Application.default_plugins = []
+    from compago import Application
+    Application.default_plugins = []
 
-  myapp = Application()
+    myapp = Application()
 
-  # ... etc ...
+    # ... etc ...
 
 ### Writing your own plugins
 
@@ -276,41 +280,41 @@ You can write your own plugins easily. A plugin is a class that inherits
 from compago.plugin.Plugin. It should override one or more of the hook
 methods:
 
-  after_application_init(application) - called just after the application is
-                                        initialized
-  before_command_run(application, command) - called before a command is run
-  after_command_run(application, command) - called just after a command is run
-  option_added(application, option) - called after an option is defined
-  command_added(application, command) - called after a command is defined
+    after_application_init(application) - called just after the application is
+                                          initialized
+    before_command_run(application, command) - called before a command is run
+    after_command_run(application, command) - called just after a command is run
+    option_added(application, option) - called after an option is defined
+    command_added(application, command) - called after a command is defined
 
 For example, let's say we want a simple plugin that prints out the current
 time before and after each command is run. Create a file time_plugin.py:
 
-  from compago.plugin import Plugin
-  from datetime import datetime
-
-  class TimePlugin(Plugin):
-
-    def before_command_run(self, application):
-      print datetime.now()
-
-    def after_command_run(self, application):
-      print datetime.now()
+    from compago.plugin import Plugin
+    from datetime import datetime
+    
+    class TimePlugin(Plugin):
+    
+        def before_command_run(self, application):
+            print datetime.now()
+    
+        def after_command_run(self, application):
+            print datetime.now()
 
 Then, to use the plugin in your compago application:
 
-  from compago import Application
-  from time_plugin import TimePlugin
+    from compago import Application
+    from time_plugin import TimePlugin
+    
+    myapp = Application()
+    myapp.add_plugin(TimePlugin())
 
-  myapp = Application()
-  myapp.add_plugin(TimePlugin())
+    @myapp.command
+    def testing123():
+        pass
 
-  @myapp.command
-  def testing123():
-    pass
-
-  if __name__ == '__main__':
-    myapp.run()
+    if __name__ == '__main__':
+        myapp.run()
 
 Simple as that!
 
@@ -333,3 +337,5 @@ TODO
 
   * Create more helper functions for fun stuff.
 
+[logo]: https://raw.githubusercontent.com/jmohr/compago/feature/python3/logo.png "Compago"
+[license]: https://raw.githubusercontent.com/jmohr/compago/feature/python3/LICENSE "License"
