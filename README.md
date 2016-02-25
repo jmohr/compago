@@ -1,4 +1,4 @@
-![Compago][logo]
+![Compago](https://raw.githubusercontent.com/jmohr/compago/feature/python3/logo.png)
 
     Copyright: ©2016 Justin Mohr. See LICENSE for details.
 
