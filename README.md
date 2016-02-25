@@ -1,8 +1,6 @@
-Project: Compago
-=============================================================================
+![Compago][logo]
 
-Copyright: ©2016 Justin Mohr. See LICENSE for details.
------------------------------------------------------------------------------
+    Copyright: ©2016 Justin Mohr. See LICENSE for details.
 
 Write polished command line applications in a fraction of the time.
 Guaranteed, or double your money back!
@@ -22,23 +20,24 @@ Quick Start
 
 First, install compago with pip, or alternately fetch the sources from Github or PyPI.
 
-  $ pip install compago
+    $ pip install compago
 
 Then, create a python file named "mycommand.py" containing this:
 
-  import compago
+    import compago
 
-  app = compago.Application()
+    app = compago.Application()
 
-  @app.command
-  def say_hello(to="world"):
-    print("Hello there, %s" % to)
+    @app.command
+    def say_hello(to="world"):
+        print("Hello there, %s" % to)
 
-  if __name__ == '__main__': app.run()
+    if __name__ == '__main__':
+        app.run()
 
 Save the file, and run it thusly:
 
-  $ python mycommand.py
+    $ python mycommand.py
 
 For some more in-depth examples, see the /examples folder in the sources.
 
