@@ -8,7 +8,7 @@ from compago.plugin import PluginManager
 
 try:
     import compago_plugins
-except ImportError, e:
+except ImportError as e:
     compago_plugins = None
     DEFAULT_PLUGINS = []
 else:
@@ -19,7 +19,8 @@ else:
 logger = logging.getLogger(__name__)
 
 
-class ApplicationError(Exception): pass
+class ApplicationError(Exception):
+    pass
 
 
 class Application(object):
@@ -53,7 +54,9 @@ class Application(object):
             usage.append('commands:\n')
             for name, cmd in self.commands.items():
                 usage.append(fmt % (name, cmd.description))
-            usage.append('\nType %s <command> --help for specific usage.' % self.name)
+            usage.append(
+                '\nType {name} <command> --help for specific usage.'.format(
+                    name=self.name))
         return '\n'.join(usage)
 
     def add_option(self, *args, **kwargs):
@@ -61,8 +64,7 @@ class Application(object):
         logger.debug('Adding app-level option:%s' % option)
         self.options.append(option)
         app_ns, remainder = self.parser.parse_known_args(sys.argv)
-        for k,v in app_ns.__dict__.items():
-            #setattr(self, k, v)
+        for k, v in app_ns.__dict__.items():
             self.args[k] = v
         self.plugin_manager.run_hook('option_added', option)
         return option
@@ -108,7 +110,8 @@ class Application(object):
 
         try:
             # take the first arg that doesn't start with '-' and is not appname
-            cmd = [a for a in args if not a.startswith('-') and not a == self.name][0]
+            cmd = [a for a in args if not a.startswith('-') and
+                   not a == self.name][0]
             logger.debug('Found command:%s' % cmd)
         except IndexError:
             logger.debug('No command found, using default:%s' % default)
@@ -117,7 +120,7 @@ class Application(object):
         if cmd not in self.commands:
             logger.debug('Command:%s not in app.commands:%s' % (
                     cmd, self.commands))
-            print self.usage
+            print(self.usage)
             sys.exit(0)
 
         logger.debug('Removing command:%s from args:%s' % (cmd, args))
@@ -129,13 +132,15 @@ class Application(object):
         try:
             logger.debug('Executing command:%s with args:%s' % (
                         cmd, str(args)))
-            self.plugin_manager.run_hook('before_command_run', self.commands[cmd])
+            self.plugin_manager.run_hook('before_command_run',
+                                         self.commands[cmd])
             result = self.commands[cmd].run(*args)
-            self.plugin_manager.run_hook('after_command_run', self.commands[cmd])
+            self.plugin_manager.run_hook('after_command_run',
+                                         self.commands[cmd])
             return result
-        except CommandError, e:
+        except CommandError as e:
             logger.error('Command failed: %s' % e)
             logger.error(traceback.format_exc())
-            print self.usage
-            print '\nERROR: %s' % e
+            print(self.usage)
+            print('\nERROR: %s' % e)
             sys.exit(1)

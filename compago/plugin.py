@@ -22,7 +22,6 @@ class PluginManager(object):
                 plugin.command_added(self.application, args[0])
 
 
-
 class Plugin(object):
 
     def after_application_init(self, application):

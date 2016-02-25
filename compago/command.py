@@ -1,13 +1,22 @@
 import argparse
 import inspect
 import logging
+import sys
 
 from compago import Option
 
 
 logger = logging.getLogger(__name__)
 
-class CommandError(Exception): pass
+
+if sys.version_info.major <= 2:
+    STR_CLASS = unicode
+else:
+    STR_CLASS = str
+
+
+class CommandError(Exception):
+    pass
 
 
 class Command(object):
@@ -35,7 +44,7 @@ class Command(object):
         try:
             logger.debug('Running target:%s' % self.target)
             return self.target(**kwargs)
-        except TypeError, e:
+        except TypeError as e:
             raise CommandError('Invalid command args: %s' % e)
 
     def default_options(self):
@@ -56,8 +65,8 @@ class Command(object):
                                 action=action, dest=arg,
                                 required=False, default=default)
             else:
-                option = Option(arg, type=unicode)
-            if not option.dest in [o.dest for o in self.options]:
+                option = Option(arg, type=STR_CLASS)
+            if option.dest not in [o.dest for o in self.options]:
                 logger.debug('Option:%s not already found in options:%s' % (
                         option, self.options))
                 options.append(option)
@@ -74,7 +83,8 @@ class Command(object):
     @property
     def parser(self):
         parser = argparse.ArgumentParser(prog=self.prog,
-                    description=self.description, parents=self.parents)
+                                         description=self.description,
+                                         parents=self.parents)
         for option in self.options:
             logger.debug('Adding argument:%s to parser.' % option)
             parser.add_argument(*option.args, **option.kwargs)
