@@ -1,9 +1,8 @@
 ![alt text][logo]
 
-The easy way to parse command line arguments in Python.
+The righteous way to parse command line arguments in Python.
 -----------------------------------------------------------------------------
 
-    Copyright: ©2016 Justin Mohr. See [LICENSE][license] for details.
 
 Write polished command line applications in a fraction of the time.
 Guaranteed, or double your money back!
@@ -336,6 +335,11 @@ TODO
 -----------------------------------------------------------------------------
 
   * Create more helper functions for fun stuff.
+
+Copyright
+-----------------------------------------------------------------------------
+
+Copyright: ©2016 Justin Mohr. See [LICENSE][license] for details.
 
 [logo]: https://raw.githubusercontent.com/jmohr/compago/feature/python3/logo.png "Compago"
 [license]: https://raw.githubusercontent.com/jmohr/compago/feature/python3/LICENSE "License"
