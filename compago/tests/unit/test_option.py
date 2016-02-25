@@ -22,5 +22,4 @@ class TestOption(object):
 
     def test_unicode(self):
         opt = Option('one', 2, three=3)
-        assert unicode(opt) == repr(opt)
         assert str(opt) == repr(opt)

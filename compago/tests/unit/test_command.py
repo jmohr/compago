@@ -2,6 +2,7 @@ from nose.tools import raises
 
 from compago import Command
 
+
 class TestCommand(object):
 
     def test_target_instantiation(self):
@@ -42,7 +43,6 @@ class TestCommand(object):
             pass
         cmd = Command(target)
         u = cmd.usage
-        print u
         assert 'aaa' in u
         assert '--bbb BBB' in u
         assert '-b BBB' in u
@@ -50,4 +50,3 @@ class TestCommand(object):
         assert '-ccc CCC' not in u
         assert '-c' in u
         assert '-c CCC' not in u
-

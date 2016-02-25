@@ -2,11 +2,12 @@ from nose.tools import raises
 
 from compago import Application
 
+
 class TestApplication(object):
 
     def test_creation(self):
         app = Application()
-        assert 'nosetests' in app.name, 'nosetests not in %s' % app.name
+        assert 'noserunner' in app.name, 'noserunnernot in %s' % app.name
         app = Application('foobar')
         assert 'foobar' in app.name, 'foobar not in %s' % app.name
 
@@ -36,15 +37,19 @@ class TestApplication(object):
 
     def test_add_command(self):
         app = Application()
+
         def target(one, two='foo'):
             return 'target called: %s %s' % (one, two)
+
         app.add_command(target=target)
         res = app.run(args=['target', 'ooonnneee', '--two', 'tttwwwooo'])
         assert 'target called: ooonnneee tttwwwooo' in res
 
     def test_command_decorator(self):
         app = Application('myapp')
+
         @app.command
         def target():
             return 'you have masterfully hit the target, old chap'
+
         app.run(args=['target'])
