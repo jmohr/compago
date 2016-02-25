@@ -1,8 +1,6 @@
 ![alt text][logo]
 
-The righteous way to parse command line arguments in Python.
------------------------------------------------------------------------------
-
+### The righteous way to parse command line arguments in Python.
 
 Write polished command line applications in a fraction of the time.
 Guaranteed, or double your money back!
@@ -15,7 +13,9 @@ Ruby's Thor, Compago fills a similar niche.
 This project was inspired by the excellent Flask-Script extension for Flask,
 but has been entirely rewritten to remove all Flask dependencies.
 
-See also: http://packages.python.org/Flask-Script/
+See also:
+  - http://packages.python.org/Flask-Script/
+  - http://click.pocoo.org/
 
 Quick Start
 -----------------------------------------------------------------------------
@@ -24,7 +24,7 @@ First, install compago with pip, or alternately fetch the sources from Github or
 
     $ pip install compago
 
-Then, create a python file named "mycommand.py" containing this:
+Then, create a python file named `mycommand.py` containing this:
 
     import compago
 
@@ -41,7 +41,7 @@ Save the file, and run it thusly:
 
     $ python mycommand.py
 
-For some more in-depth examples, see the /examples folder in the sources.
+For some more in-depth examples, see the `/examples` folder in the sources.
 
 Background
 -----------------------------------------------------------------------------
@@ -112,18 +112,19 @@ Boom. Done.
 Or alternately, fetch the source from github:
 
     git clone https://github.com/jmohr/compago.git
+    cd compago && python setup.py install
 
 Using Compago
 -----------------------------------------------------------------------------
 
 Starting a Compago script is as easy as importing the compago module, and
-creating a compago.Application object.
+creating a `compago.Application` object.
 
     import compago
     app = compago.Application()
 
 An Application has one primary attribute, a name. By default, this will just
-be the name of the script (sys.argv[0]), but you can override this if needed.
+be the name of the script (`sys.argv[0]`), but you can override this if needed.
 The name will be shown in the help.
 
 Commands and Options
@@ -134,7 +135,7 @@ will be accessible for the user to call on the command line. For example, in
 the Quick Start example above, the "check_host" function is a command. You
 can define as many commands as you want in your script.
 
-The @app.command decorator is pretty straight forward in its usage. Simply
+The `@app.command` decorator is pretty straight forward in its usage. Simply
 decorate a function (with or without arguments), and the function will then
 be available as a "command" on the command line.
 
@@ -183,8 +184,8 @@ You can mix up the argument types, as well:
 It works as you'd expect.
 
 Another decorator is available if you need more control over the options.
-You can define one or more @option decorators on your function, and pass
-in the same arguments that you would pass directly to argparse.ArgumentParser
+You can define one or more `@option` decorators on your function, and pass
+in the same arguments that you would pass directly to `argparse.ArgumentParser`
 to define an option. See it in action:
 
     @myapp.option('-x', '--execute', dest='command')
@@ -194,7 +195,7 @@ to define an option. See it in action:
             call(command)
 
 This also works about as you'd expect. One thing to note, if you decorate
-your function with one or more @option decorators, there is no need to also
+your function with one or more `@option` decorators, there is no need to also
 decorate it with @command. This will be done automatically.
 
 Finally, adding help strings to your commands is super easy. Just put a
@@ -217,7 +218,7 @@ own plugins to be used in your scripts. Two default plugins are provided,
 and are turned on by default if you have the compago_plugins module
 installed.
 
-The default plugins are LoggingPlugin and ConfigPlugin. LoggingPlugin
+The default plugins are `LoggingPlugin` and `ConfigPlugin`. `LoggingPlugin`
 provides access to Python's logging infrastructure from within your commands.
 For example:
 
@@ -236,13 +237,13 @@ of the log file.
 
     $ python myapp.py --log --logfile /var/log/myapp.log test_command Justin
 
-The second default plugin is the ConfigPlugin. This allows you to read
+The second default plugin is the `ConfigPlugin`. This allows you to read
 config vars from a YAML formatted config file (default location:
 ./myapp.py.conf). This location can be overridden by specifying the
 --configfile option on the command line.
 
 Any config variables defined in the config file are available within your
-commands as myapp.config['YOUR_KEY']. For example, say you have a config file
+commands as `myapp.config['YOUR_KEY']`. For example, say you have a config file
 named /etc/myapp.conf:
 
     YOUR_NAME: Justin
@@ -276,7 +277,7 @@ instantiating your Application:
 ### Writing your own plugins
 
 You can write your own plugins easily. A plugin is a class that inherits
-from compago.plugin.Plugin. It should override one or more of the hook
+from `compago.plugin.Plugin`. It should override one or more of the hook
 methods:
 
     after_application_init(application) - called just after the application is
