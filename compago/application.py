@@ -94,13 +94,16 @@ class Application(object):
     def add_plugin(self, plugin):
         self.plugin_manager.register(plugin)
 
+    def disable_plugins(self):
+        self.plugin_manager.plugins = []
+
     def run(self, args=None, default=None):
         logger.debug('Running application with args:%s, default:%s' % (
                 args, default))
 
         if not args:
             logger.debug('args is None, so using sys.argv')
-            args = sys.argv
+            args = sys.argv[1:]  # the first arg is the script name, in this case.
         args = list(args)
         if self.name in args:
             logger.debug('Removing my own name:%s from the args:%s' % (
@@ -118,10 +121,10 @@ class Application(object):
             cmd = default
 
         if cmd not in self.commands:
-            logger.debug('Command:%s not in app.commands:%s' % (
-                    cmd, self.commands))
+            logger.error('Command:{cmd} not in app.commands:{cmds}'.format(
+                         cmd=cmd, cmds=self.commands))
             print(self.usage)
-            sys.exit(0)
+            sys.exit(1)
 
         logger.debug('Removing command:%s from args:%s' % (cmd, args))
         args.remove(cmd)

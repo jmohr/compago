@@ -1,7 +1,7 @@
 import sys
 from setuptools import setup, find_packages
 
-install_requires = ['versiontools']
+install_requires = []
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     install_requires.append('argparse')
 
@@ -11,7 +11,7 @@ setup(
     author='Justin Mohr',
     author_email='jmohr@bytepulse.net',
     packages=find_packages(exclude=['*.test.*', '*.test']),
-    version=':versiontools:compago:',
+    version='2.0.0',
     install_requires=install_requires,
     license='BSD',
     url='http://github.com/jmohr/compago',

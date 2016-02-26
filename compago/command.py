@@ -66,7 +66,7 @@ class Command(object):
                                 required=False, default=default)
             else:
                 option = Option(arg, type=STR_CLASS)
-            if option.dest not in [o.dest for o in self.options]:
+            if option.destination not in [o.destination for o in self.options]:
                 logger.debug('Option:%s not already found in options:%s' % (
                         option, self.options))
                 options.append(option)

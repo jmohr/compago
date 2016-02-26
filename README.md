@@ -7,11 +7,16 @@ Guaranteed, or double your money back!
 
 Compago is a framework for simple command-line parsing in Python. Compago
 provides a simple framework and set of decorators to allow you to quickly
-and easily define a set of commands within a script. For those familiar with
-Ruby's Thor, Compago fills a similar niche.
+and easily define a set of commands within a script.
 
-This project was inspired by the excellent Flask-Script extension for Flask,
-but has been entirely rewritten to remove all Flask dependencies.
+While there are other (more full featured) libraries available to
+do argument parsing -- notably the Click library -- Compago can still
+be useful because it has **no external dependencies<sup>\*</sup>** and it is 
+**pure, unadulterated Python**. This makes it easier to package and
+distribute with your scripts.
+
+<sup>\*</sup> Unless you are using Python 2.6 or older, in which case it
+needs the `argparse` library.
 
 See also:
   - http://packages.python.org/Flask-Script/
@@ -172,9 +177,14 @@ In that example, the arguments "say" and "name" will be available as options
 on the command line:
 
 ```
-python myapp.py --say="What up" --name="Justin Beiber"
-  ...or...
-python myapp.py -s "Goodbye" -n "Dude"
+$ python myapp.py
+Hello, John Doe.
+
+$ python myapp.py -n "Dude"
+Hello, Dude.
+
+$ python myapp.py --say="What up" --name="Justin Beiber"
+What up, Justin Beiber.
 ```
 
 If the options are not specified, the defaults will be used. One special
@@ -326,7 +336,7 @@ methods:
 
 ```python
 after_application_init(application)      # called just after the application 
-                                           is initialized
+                                         #   is initialized
 before_command_run(application, command) # called before a command is run
 after_command_run(application, command)  # called just after a command is run
 option_added(application, option)        # called after an option is defined
@@ -391,6 +401,7 @@ Copyright
 -----------------------------------------------------------------------------
 
 Copyright: ©2016 Justin Mohr. See [LICENSE][license] for details.
+
 
 [logo]: https://raw.githubusercontent.com/jmohr/compago/feature/python3/logo.png "Compago"
 [license]: https://raw.githubusercontent.com/jmohr/compago/feature/python3/LICENSE "License"

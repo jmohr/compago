@@ -10,38 +10,24 @@ class Option(object):
                 str(args), str(kwargs)))
         self.args = args
         self.kwargs = kwargs
-        if 'dest' in kwargs:
-            logger.debug('Found "dest" in kwargs: %s' % kwargs['dest'])
-            self.dest = kwargs['dest']
-        else:
-            logger.debug('Key "dest" not found in kwargs:%s' % str(kwargs))
-            try:
-                self.dest = [a for a in args if isinstance(a, str) and not a.startswith('-')][0]
-            except IndexError:
-                try:
-                    self.dest = [a.strip('--') for a in args
-                                 if a.startswith('--')][0]
-                except IndexError:
-                    self.dest = [a.strip('-') for a in args
-                                 if a.startswith('-')][0]
-            logger.debug('Inferred dest:%s' % self.dest)
+        self._destination = None
 
-    def get_dest(self, args, kwargs):
-        if 'dest' in kwargs:
-            logger.debug('Found "dest" in kwargs: %s' % kwargs['dest'])
-            return kwargs['dest']
-        else:
-            logger.debug('Key "dest" not found in kwargs:%s' % str(kwargs))
-            try:
-                self.dest = [a for a in args if isinstance(a, str) and not a.startswith('-')][0]
-            except IndexError:
+    @property
+    def destination(self):
+        if not self._destination:
+            if 'dest' in self.kwargs:
+                logger.debug('Found "dest" in kwargs: %s' % self.kwargs['dest'])
+                self._destination = self.kwargs['dest']
+            else:
+                logger.debug('Key "dest" not found in kwargs:%s' % str(self.kwargs))
                 try:
-                    self.dest = [a.strip('--') for a in args
-                                 if a.startswith('--')][0]
+                    self._destination = [a for a in self.args if isinstance(a, str) and not a.startswith('-')][0]
                 except IndexError:
-                    self.dest = [a.strip('-') for a in args
-                                 if a.startswith('-')][0]
-            logger.debug('Inferred dest:%s' % self.dest)
+                    try:
+                        self._destination = [a.strip('--') for a in self.args if a.startswith('--')][0]
+                    except IndexError:
+                        self._destination = [a.strip('-') for a in self.args if a.startswith('-')][0]
+        return self._destination
 
     def __repr__(self):
         args = ', '.join([repr(a) for a in self.args])

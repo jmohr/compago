@@ -48,7 +48,7 @@ class LoggingPlugin(Plugin):
         application.add_option('--logfile', dest='logfile',
                                metavar='PATH',
                                help='Optional path to the logfile. {0}'.format(
-                                   default))
+                                   default_log))
         application.logger = logging.getLogger(application.name)
         application.logger.setLevel(self.level)
         if not self.path:
